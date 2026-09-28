@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { ArrowRight, LockKeyhole } from 'lucide-react';
+import { ArrowRight, LoaderCircle, LockKeyhole } from 'lucide-react';
 import { BrandMark } from '@/components/site-header';
 
 export default function LoginPage() {
@@ -53,7 +53,7 @@ export default function LoginPage() {
               <Input id="password" name="password" type="password" required autoComplete="current-password" />
             </div>
             <Button type="submit" disabled={loading} className="h-10 w-full bg-white text-[#111] hover:bg-white/85">
-              {loading ? 'Signing in...' : <>Log in <ArrowRight /></>}
+              {loading ? <><LoaderCircle className="animate-spin" /> Signing in...</> : <>Log in <ArrowRight /></>}
             </Button>
             <p className="text-center text-sm text-white/50">
               No account?{' '}

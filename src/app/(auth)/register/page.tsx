@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { toast } from 'sonner';
-import { ArrowRight, Shield } from 'lucide-react';
+import { ArrowRight, LoaderCircle, Shield } from 'lucide-react';
 import { BrandMark } from '@/components/site-header';
 
 export default function RegisterPage() {
@@ -54,7 +54,7 @@ export default function RegisterPage() {
               <p className="text-xs text-white/40">Use at least 8 characters</p>
             </div>
             <Button type="submit" disabled={loading} className="h-10 w-full bg-white text-[#111] hover:bg-white/85">
-              {loading ? 'Creating...' : <>Create account <ArrowRight /></>}
+              {loading ? <><LoaderCircle className="animate-spin" /> Creating...</> : <>Create account <ArrowRight /></>}
             </Button>
             <p className="text-center text-sm text-white/50">
               Already have one?{' '}

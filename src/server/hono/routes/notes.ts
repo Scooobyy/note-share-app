@@ -8,6 +8,7 @@ import { requireAuth } from '../middleware/auth';
 import { generateShareToken, hashToken, generateAccessKey } from '@/lib/tokens';
 import { hashPassword } from '@/lib/auth/password';
 
+
 export const noteRoutes = new Hono<{ Variables: { user: { userId: string; email: string } } }>()
   .use('*', requireAuth)
   .post('/', zValidator('json', createNoteSchema), async (c) => {
