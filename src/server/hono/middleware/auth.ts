@@ -3,6 +3,8 @@ import { getSession, type SessionPayload } from '@/lib/auth/session';
 
 export type AuthVars = {
   user: SessionPayload;
+  shareId: string;
+  share: any;
 };
 
 export const requireAuth = createMiddleware<{ Variables: AuthVars }>(async (c, next) => {

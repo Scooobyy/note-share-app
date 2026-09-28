@@ -4,16 +4,24 @@ import { eq, and, isNull, gt, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '@/lib/db';
 import { notes, shares } from '@/lib/db/schema';
+import type { Share } from '@/lib/db/schema';
 import { requireAuth } from '../middleware/auth';
 import { hashToken } from '@/lib/tokens';
 import { verifyPassword } from '@/lib/auth/password';
 import { passwordRateLimit, recordAttempt, getClientIp } from '../middleware/rateLimit';
 
+// ---------- Types ----------
+type ShareVars = {
+  shareId: string;
+  share: Share;
+  user: { userId: string; email: string };
+};
+
 const viewSchema = z.object({
   password: z.string().min(1).max(128).optional(),
 });
 
-export const shareRoutes = new Hono()
+export const shareRoutes = new Hono<{ Variables: ShareVars }>()
   // ---------- PUBLIC: read-only inspection (never mutates) ----------
   .get('/:token', async (c) => {
     const token = c.req.param('token');
@@ -35,7 +43,6 @@ export const shareRoutes = new Hono()
       return c.json({ status: 'needs_password', accessType: 'PASSWORD' });
     }
 
-    // Public → tell client it's ready; don't reveal content yet
     return c.json({ status: 'ready_to_view', accessType: 'PUBLIC' });
   })
 
@@ -43,7 +50,6 @@ export const shareRoutes = new Hono()
   .post(
     '/:token/view',
     async (c, next) => {
-      // Load share for rate-limit context
       const token = c.req.param('token');
       const share = await db.query.shares.findFirst({
         where: eq(shares.tokenHash, hashToken(token)),
@@ -56,18 +62,16 @@ export const shareRoutes = new Hono()
     passwordRateLimit,
     zValidator('json', viewSchema),
     async (c) => {
-      const share = c.get('share') as any;
+      const share = c.get('share');
       const ip = getClientIp(c);
       const body = c.req.valid('json');
 
-      // Re-check state (middleware may have raced)
       const state = evaluateShareState(share);
       if (state !== 'ok') {
         const code = state === 'expired' || state === 'used' ? 410 : 403;
         return c.json({ status: state }, code);
       }
 
-      // Password path: verify first, atomically claim second
       if (share.accessType === 'PASSWORD') {
         if (!body.password) return c.json({ status: 'needs_password' }, 400);
         if (!share.passwordHash) return c.json({ error: 'Not configured' }, 500);
@@ -79,7 +83,6 @@ export const shareRoutes = new Hono()
         }
       }
 
-      // Atomic claim + increment. This is the ONLY place view_count changes.
       const claimed = await atomicClaim(share.id, share.shareType);
       if (!claimed) return c.json({ status: 'used' }, 410);
 
@@ -112,6 +115,7 @@ export const shareRoutes = new Hono()
     return c.json({ ok: true });
   });
 
+// ---------- Helpers ----------
 type ShareState = 'ok' | 'expired' | 'revoked' | 'used';
 
 function evaluateShareState(share: {
