@@ -1,69 +1,38 @@
-import Image from "next/image";
+import { getSession } from '@/lib/auth/session';
+import { redirect } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowRight, Clock3, KeyRound, ShieldCheck } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { SiteHeader } from '@/components/site-header';
 
-export default function Home() {
+export default async function Home() {
+  const session = await getSession();
+  if (session) redirect('/notes');
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="min-h-screen overflow-hidden">
+      <SiteHeader />
+      <section className="mx-auto flex min-h-[calc(100vh-70px)] max-w-[1340px] flex-col items-center px-6 pt-[140px] text-center lg:pt-[140px]">
+        <div className="mb-8 flex size-[70px] items-center justify-center rounded-[20px] bg-white text-[#111] shadow-[0_0_0_1px_rgba(255,255,255,0.2)]">
+          <ShieldCheck className="size-9" strokeWidth={1.7} />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <p className="mb-6 text-sm font-medium tracking-wide text-white/90">Private by design</p>
+        <h1 className="max-w-[760px] text-[clamp(3.1rem,6vw,5rem)] font-semibold leading-[0.98] tracking-[-0.06em] text-white">
+          Share notes that self-destruct.
+        </h1>
+        <p className="mt-8 max-w-[610px] text-base leading-7 text-white/55 sm:text-lg">
+          One-time or time-based links. Public or password-protected. Revoke anytime.
+        </p>
+        <div className="mt-10 flex flex-wrap justify-center gap-3">
+          <Link href="/register"><Button className="h-10 bg-white px-4 text-sm text-[#111] hover:bg-white/85">Get started <ArrowRight /></Button></Link>
+          <Link href="/login"><Button variant="outline" className="h-10 border-white/[0.14] bg-transparent px-4 text-sm text-white hover:bg-white/[0.08] hover:text-white">Log in</Button></Link>
         </div>
-      </main>
-    </div>
+        <div className="mt-10 flex flex-wrap justify-center gap-x-5 gap-y-3 text-xs text-white/65">
+          <span className="flex items-center gap-1.5"><KeyRound className="size-3.5" /> Encrypted</span>
+          <span className="flex items-center gap-1.5"><Clock3 className="size-3.5" /> Auto-expiring</span>
+          <span className="flex items-center gap-1.5"><ShieldCheck className="size-3.5" /> Revocable</span>
+        </div>
+      </section>
+    </main>
   );
 }
