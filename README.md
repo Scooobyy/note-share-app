@@ -10,8 +10,8 @@ Built as a POC for the MERN/PERN Stack Developer task.
 |---|---|
 | **Live demo** | https://note-taking-app-psi-ten.vercel.app |
 | **GitHub** | https://github.com/Scooobyy/note-share-app |
-| **Demo video** | _[add Loom link after recording]_ |
-| **Technical walkthrough** | _[add Loom link after recording]_ |
+| **Demo video** | https://drive.google.com/file/d/1og9v5SvgDbzg3MUSd001LWGX5-eF7u0g/view?usp=drive_link |
+| **Technical walkthrough** | https://www.loom.com/share/95005c8b84134fd68a9684fbb2f4f959 |
 | **Test credentials** | `test@example.com` / `password123` |
 
 ## Tech Stack
