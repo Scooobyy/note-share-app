@@ -24,7 +24,6 @@ export default function LoginPage() {
       await api.login(String(fd.get('email')), String(fd.get('password')));
       toast.success('Welcome back');
       router.push('/notes');
-      router.refresh();
     } catch (err: any) {
       toast.error(err.message || 'Login failed');
     } finally {

@@ -24,7 +24,6 @@ export default function RegisterPage() {
       await api.register(String(fd.get('email')), String(fd.get('password')));
       toast.success('Account created');
       router.push('/notes');
-      router.refresh();
     } catch (err: any) {
       toast.error(err.message || 'Registration failed');
     } finally {
